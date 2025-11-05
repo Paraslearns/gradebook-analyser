@@ -1,0 +1,119 @@
+def print_welcome():
+    
+    print("Welcome to the GradeBook Analyzer")
+    
+
+def menu():
+    print('\nMenu:')
+    print('1. Enter student data')
+    print('2. Analyze and display results')
+    print('3. Exit')
+
+def input_student_data():
+    n = int(input("Enter number of students: "))
+    d = {}
+    for i in range(n):
+        a = input(f"Enter name for student {i+1}: ").strip()
+        b = float(input(f"Enter marks for {a}: "))
+        d[a] = b
+    return d
+
+def calculate_average(d):
+    return sum(d.values()) / len(d)
+
+def calculate_median(d):
+    l = sorted(d.values())
+    n = len(l)
+    m = n // 2
+    if n % 2 == 0:
+        return (l[m - 1] + l[m]) / 2
+    else:
+        return l[m]
+
+def find_max_score(d):
+    mx = max(d.values())
+    return mx, [a for a, b in d.items() if b == mx]
+
+def find_min_score(d):
+    mn = min(d.values())
+    return mn, [a for a, b in d.items() if b == mn]
+
+def assign_grades(d):
+    g = {}
+    for a, b in d.items():
+        if b >= 90:
+            grade = "A"
+        elif b >= 80:
+            grade = "B"
+        elif b >= 70:
+            grade = "C"
+        elif b >= 60:
+            grade = "D"
+        else:
+            grade = "F"
+        g[a] = grade
+    return g
+
+def count_grade_distribution(g):
+    dist = {'A':0, 'B':0, 'C':0, 'D':0, 'F':0}
+    for grade in g.values():
+        dist[grade] += 1
+    return dist
+
+def print_statistics(d):
+    print("\nClass Statistics:")
+    print(f"Average: {calculate_average(d):.2f}")
+    print(f"Median : {calculate_median(d):.2f}")
+
+    mx, mx_names = find_max_score(d)
+    print(f"Highest: {mx} ({', '.join(mx_names)})")
+
+    mn, mn_names = find_min_score(d)
+    print(f"Lowest : {mn} ({', '.join(mn_names)})")
+
+def print_grade_distribution(g):
+    dist = count_grade_distribution(g)
+    print('\nGrade Distribution:')
+    for grade, count in dist.items():
+        print(f"{grade}: {count}")
+
+def print_pass_fail(d):
+    p = [a for a, b in d.items() if b >= 40]
+    f = [a for a, b in d.items() if b < 40]
+    print(f"\nPassed ({len(p)}): {', '.join(p)}")
+    print(f"Failed ({len(f)}): {', '.join(f)}")
+
+def print_table(d, g):
+    print("\n{:<12} {:<8} {:<5}".format("Name", "Marks", "Grade"))
+    
+    for a in d:
+        print("{:<12} {:<8.2f} {:<5}".format(a, d[a], g[a]))
+
+def main():
+    print_welcome()
+    d = {}
+    g = {}
+    while True:
+        menu()
+        c = input("Select an option: ").strip()
+        if c == '1':
+            d = input_student_data()
+            g = assign_grades(d)
+            print("\nData entry complete.")
+        elif c == '2':
+            if not d:
+                print("No data available. Please enter student data first.")
+                continue
+            print_statistics(d)
+            g = assign_grades(d)
+            print_grade_distribution(g)
+            print_pass_fail(d)
+            print_table(d, g)
+        elif c == '3':
+            print("Exiting GradeBook Analyzer. Goodbye!")
+            break
+        else:
+            print("Invalid option. Please try again.")
+
+if __name__ == "__main__":
+    main()
